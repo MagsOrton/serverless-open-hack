@@ -7,17 +7,10 @@ on:
       - master
   workflow_dispatch:
 
-# CONFIGURATION
-# For help, go to https://github.com/Azure/Actions
-#
-# 1. Set up the following secrets in your repository:
-#   AZURE_FUNCTIONAPP_PUBLISH_PROFILE
-#
-# 2. Change these variables for your configuration:
 env:
-  AZURE_FUNCTIONAPP_NAME: 'FunctionAppServerlessOpenHack'         # set this to your application's name
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'FunctionAppOH'                 # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '3.1.x'                                         # set this to the dotnet version to use
+  AZURE_FUNCTIONAPP_NAME: 'FunctionAppServerlessOpenHack'         
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'FunctionAppOH'                 
+  DOTNET_VERSION: '3.1.x'                                         
 
 jobs:
   build-and-deploy:
@@ -42,11 +35,8 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-        # Artifact name
         name: 'Archiving Package'
-        # A file, directory or wildcard pattern that describes what to upload
         path: './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
-        # The desired behavior if no files are found using the provided path.
         retention-days: 30
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
@@ -55,5 +45,3 @@ jobs:
         app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
         package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
         publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
-
-# For more samples to get started with GitHub Action workflows to deploy to Azure, refer to https://github.com/Azure/actions-workflow-samples
