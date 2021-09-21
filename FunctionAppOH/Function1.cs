@@ -15,20 +15,20 @@ namespace FunctionAppOH
 
         [FunctionName("CreateRating")]
         public static async Task<IActionResult> CreateRating(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string productId = req.Query["productId"];
+            string payload  = req.Query["payload"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            productId = productId ?? data?.productId;
+            payload = payload  ?? data?.payload ;
 
-            string responseMessage = string.IsNullOrEmpty(productId)
-                ? "This HTTP triggered function executed successfully. Pass a productId in the query string or in the request body for a personalized response."
-                : $"The product name for your product id {productId}";
+            string responseMessage = string.IsNullOrEmpty(payload )
+                ? "This HTTP triggered function executed successfully. Pass a payload  in the query string or in the request body for a personalized response."
+                : $"The product name for your product id {payload }";
 
             return new OkObjectResult(responseMessage);
         }
@@ -39,15 +39,15 @@ namespace FunctionAppOH
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string productId = req.Query["productId"];
+            string ratingId = req.Query["ratingId"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            productId = productId ?? data?.productId;
+            ratingId = ratingId ?? data?.ratingId;
 
-            string responseMessage = string.IsNullOrEmpty(productId)
-                ? "This HTTP triggered function executed successfully. Pass a productId in the query string or in the request body for a personalized response."
-                : $"The product name for your product id {productId}";
+            string responseMessage = string.IsNullOrEmpty(ratingId)
+                ? "This HTTP triggered function executed successfully. Pass a ratingId in the query string or in the request body for a personalized response."
+                : $"The product name for your product id {ratingId}";
 
             return new OkObjectResult(responseMessage);
         }
@@ -59,15 +59,15 @@ namespace FunctionAppOH
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string productId = req.Query["productId"];
+            string userId = req.Query["userId"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            productId = productId ?? data?.productId;
+            userId = userId ?? data?.userId;
 
-            string responseMessage = string.IsNullOrEmpty(productId)
-                ? "This HTTP triggered function executed successfully. Pass a productId in the query string or in the request body for a personalized response."
-                : $"The product name for your product id {productId}";
+            string responseMessage = string.IsNullOrEmpty(userId)
+                ? "This HTTP triggered function executed successfully. Pass a userId in the query string or in the request body for a personalized response."
+                : $"The product name for your product id {userId}";
 
             return new OkObjectResult(responseMessage);
         }
