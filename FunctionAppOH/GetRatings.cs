@@ -17,7 +17,14 @@ namespace FunctionAppOH
         public static async Task<IActionResult> GetRatings(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
+            [CosmosDB(
+                 databaseName: "my-database",
+                collectionName: "my-container",
+                ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOut,
+            ILogger log)
         {
+
+
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string userId  = req.Query["userId"];
