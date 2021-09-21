@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace FunctionAppOH
 {
@@ -15,27 +16,24 @@ namespace FunctionAppOH
 
         [FunctionName("GetRatings")]
         public static async Task<IActionResult> GetRatings(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
-            ILogger log)
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetRatings/{id}")] HttpRequest req,
             [CosmosDB(
-                 databaseName: "my-database",
-                collectionName: "my-container",
-                ConnectionStringSetting = "CosmosDbConnectionString")]IAsyncCollector<dynamic> documentsOut,
+                 databaseName: "serverlessoh",
+                 collectionName: "ratings",
+                 ConnectionStringSetting = "CosmosDbConnectionString",
+                 SqlQuery  = "select * from c where userId = {id}")]IEnumerable<Ratings> ratings,
             ILogger log)
         {
 
+            log.LogInformation("GetRatings HTTP trigger function processed a request.");
 
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            foreach (Ratings rating in ratings)
+            {
+                log.LogInformation(rating.id);
+            }
+            return new OkResult();
 
-            string userId  = req.Query["userId"];
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            userId = userId  ?? data?.userId ;
-
-            string responseMessage = string.IsNullOrEmpty(userId )
-                ? "This HTTP triggered function executed successfully. Pass a userId in the query string or in the request body for a personalized response."
-                : $"The userId {userId }";
+            string responseMessage = "Test";
 
             return new OkObjectResult(responseMessage);
         }
