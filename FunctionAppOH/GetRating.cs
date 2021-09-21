@@ -14,7 +14,7 @@ namespace FunctionAppOH
     {
 
         [FunctionName("GetRating")]
-        public static async Task<IActionResult> CreateRating(
+        public static async Task<IActionResult> GetRating(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {

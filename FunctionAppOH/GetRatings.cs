@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace FunctionAppOH
 {
@@ -14,23 +15,19 @@ namespace FunctionAppOH
     {
 
         [FunctionName("GetRatings")]
-        public static async Task<IActionResult> CreateRating(
-            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+        public static async Task<IActionResult> GetRatings(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetRatings/{id}")] HttpRequest req,
+            [CosmosDB(
+                 databaseName: "%databaseName%",
+                 collectionName: "%collectionName%",
+                 ConnectionStringSetting = "CosmosDbConnectionString",
+                 SqlQuery  = "select * from c where c.userId = {id}")]IEnumerable<Ratings> ratings,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string payload  = req.Query["payload"];
+            log.LogInformation("GetRatings HTTP trigger function processed a request.");
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            payload = payload  ?? data?.payload ;
-
-            string responseMessage = string.IsNullOrEmpty(payload )
-                ? "This HTTP triggered function executed successfully. Pass a payload  in the query string or in the request body for a personalized response."
-                : $"The product name for your product id {payload }";
-
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult(ratings);
         }
     }
 }
