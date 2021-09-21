@@ -12,8 +12,48 @@ namespace FunctionAppOH
 {
     public static class FunctionGetProductId
     {
-        [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
+
+        [FunctionName("CreateRating")]
+        public static async Task<IActionResult> CreateRating(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            string productId = req.Query["productId"];
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            productId = productId ?? data?.productId;
+
+            string responseMessage = string.IsNullOrEmpty(productId)
+                ? "This HTTP triggered function executed successfully. Pass a productId in the query string or in the request body for a personalized response."
+                : $"The product name for your product id {productId}";
+
+            return new OkObjectResult(responseMessage);
+        }
+        [FunctionName("GetRating")]
+        public static async Task<IActionResult> GetRating(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            string productId = req.Query["productId"];
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            productId = productId ?? data?.productId;
+
+            string responseMessage = string.IsNullOrEmpty(productId)
+                ? "This HTTP triggered function executed successfully. Pass a productId in the query string or in the request body for a personalized response."
+                : $"The product name for your product id {productId}";
+
+            return new OkObjectResult(responseMessage);
+        }
+
+        [FunctionName("GetRatings")]
+        public static async Task<IActionResult> GetRatings(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequest req,
             ILogger log)
         {
