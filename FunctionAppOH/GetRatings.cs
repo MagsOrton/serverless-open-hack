@@ -18,10 +18,10 @@ namespace FunctionAppOH
         public static async Task<IActionResult> GetRatings(
             [HttpTrigger(AuthorizationLevel.Function, "get", Route = "GetRatings/{id}")] HttpRequest req,
             [CosmosDB(
-                 databaseName: "serverlessoh",
-                 collectionName: "ratings",
+                 databaseName: "%databaseName%",
+                 collectionName: "%collectionName%",
                  ConnectionStringSetting = "CosmosDbConnectionString",
-                 SqlQuery  = "select * from c where userId = {id}")]IEnumerable<Ratings> ratings,
+                 SqlQuery  = "select * from c where c.userId = {id}")]IEnumerable<Ratings> ratings,
             ILogger log)
         {
 
