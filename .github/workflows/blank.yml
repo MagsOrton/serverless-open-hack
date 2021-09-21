@@ -34,7 +34,17 @@ jobs:
       run: |
         pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
         dotnet build --configuration Release --output ./output
+        ls -l ./output/
         popd
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        # Artifact name
+        name: 'Archiving Package'
+        # A file, directory or wildcard pattern that describes what to upload
+        path: './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        # The desired behavior if no files are found using the provided path.
+        retention-days: 30
     - name: 'Run Azure Functions Action'
       uses: Azure/functions-action@v1
       id: fa
