@@ -27,15 +27,7 @@ namespace FunctionAppOH
 
             log.LogInformation("GetRatings HTTP trigger function processed a request.");
 
-            foreach (Ratings rating in ratings)
-            {
-                log.LogInformation(rating.id);
-            }
-            return new OkResult();
-
-            string responseMessage = "Test";
-
-            return new OkObjectResult(responseMessage);
+            return new OkObjectResult(ratings);
         }
     }
 }
