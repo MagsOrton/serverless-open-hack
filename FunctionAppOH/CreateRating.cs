@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net;
+using RestSharp;
 
 namespace FunctionAppOH
 {
@@ -35,7 +36,7 @@ namespace FunctionAppOH
                 int rating = data.rating;
                 string userNotes = data.userNotes;
 
-                if (true /*add check for valid data*/) {
+                if (IsUserIdValid(userId) /*add check for valid data*/) {
                     try
                     {
                         await documentsOut.AddAsync(new
@@ -60,6 +61,19 @@ namespace FunctionAppOH
             }
 
             return new StatusCodeResult((int)HttpStatusCode.BadRequest);
+        }
+
+        private static bool IsUserIdValid(string userId) 
+        {
+            Guid guidUSerId;
+            if (Guid.TryParse(userId, out guidUSerId))
+            {
+                var client = new RestClient("https://serverlessohapi.azurewebsites.net/api");
+                var request = new RestRequest("GetUser", Method.GET).AddParameter("userId", userId);
+                var response = client.Get<object>(request);
+                return response.IsSuccessful;
+            }
+            return false;
         }
     }
   }
