@@ -36,7 +36,7 @@ namespace FunctionAppOH
                 int rating = data.rating;
                 string userNotes = data.userNotes;
 
-                if (IsUserIdValid(userId) /*add check for valid data*/) {
+                if (IsUserIdValid(userId) && IsProductIdValid(productId) /*add check for valid data*/) {
                     try
                     {
                         await documentsOut.AddAsync(new
@@ -65,11 +65,24 @@ namespace FunctionAppOH
 
         private static bool IsUserIdValid(string userId) 
         {
-            Guid guidUSerId;
-            if (Guid.TryParse(userId, out guidUSerId))
+            Guid guidUserId;
+            if (Guid.TryParse(userId, out guidUserId))
             {
                 var client = new RestClient("https://serverlessohapi.azurewebsites.net/api");
                 var request = new RestRequest("GetUser", Method.GET).AddParameter("userId", userId);
+                var response = client.Get<object>(request);
+                return response.IsSuccessful;
+            }
+            return false;
+        }
+
+        private static bool IsProductIdValid(string productId)
+        {
+            Guid guidProductId;
+            if (Guid.TryParse(productId, out guidProductId))
+            {
+                var client = new RestClient("https://serverlessohapi.azurewebsites.net/api");
+                var request = new RestRequest("GetProduct", Method.GET).AddParameter("productId", productId);
                 var response = client.Get<object>(request);
                 return response.IsSuccessful;
             }
