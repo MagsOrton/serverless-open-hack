@@ -42,17 +42,18 @@ namespace FunctionAppOH
                 if (IsUserIdValid(userId) && IsProductIdValid(productId) && IsRatingValid(rating) /*add check for valid data*/) {
                     try
                     {
-                        await documentsOut.AddAsync(new
+                        var newRating = new Ratings()
                         {
-                            id = System.Guid.NewGuid().ToString(),
+                            id = Guid.NewGuid().ToString(),
                             userId = userId,
                             productId = productId,
                             timestamp = DateTime.UtcNow,
                             locationName = locationName,
                             rating = rating,
                             userNotes = userNotes
-                        });
-                        return new OkObjectResult("New rating was inserted successfully");
+                        };
+                        await documentsOut.AddAsync(newRating);
+                        return new OkObjectResult(newRating);
                     }
                     catch(Exception ex)
                     {
