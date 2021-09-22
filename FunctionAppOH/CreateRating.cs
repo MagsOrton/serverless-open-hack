@@ -33,10 +33,13 @@ namespace FunctionAppOH
                 string userId = data.userId;
                 string productId = data.productId;
                 string locationName = data.locationName;
-                int rating = data.rating;
+                int rating;
+                if (!int.TryParse(data.rating.ToString(), out rating)) 
+                    rating = -1;
+
                 string userNotes = data.userNotes;
 
-                if (IsUserIdValid(userId) && IsProductIdValid(productId) /*add check for valid data*/) {
+                if (IsUserIdValid(userId) && IsProductIdValid(productId) && IsRatingValid(rating) /*add check for valid data*/) {
                     try
                     {
                         await documentsOut.AddAsync(new
@@ -87,6 +90,11 @@ namespace FunctionAppOH
                 return response.IsSuccessful;
             }
             return false;
+        }
+
+        private static bool IsRatingValid(int rating) 
+        {
+            return rating >= 0 && rating <= 5;           
         }
     }
   }
